@@ -1,7 +1,5 @@
 package com.youle.chat;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.socket.*;
 
 import java.io.IOException;
@@ -19,19 +17,9 @@ public class SystemWebSocketHandler implements WebSocketHandler {
         users = new ArrayList<>();
     }
 
-    @Autowired
-    private WebSocketService webSocketService;
-
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         users.add(session);
-        String userName = (String) session.getAttributes().get(Constants.WEBSOCKET_USERNAME);
-        if(userName!= null){
-            //查询未读消息
-            int count = webSocketService.getUnReadNews((String) session.getAttributes().get(Constants.WEBSOCKET_USERNAME));
-
-            session.sendMessage(new TextMessage(count + ""));
-        }
     }
 
     @Override
@@ -82,7 +70,7 @@ public class SystemWebSocketHandler implements WebSocketHandler {
      */
     public void sendMessageToUser(String userName, TextMessage message) {
         for (WebSocketSession user : users) {
-            if (user.getAttributes().get(Constants.WEBSOCKET_USERNAME).equals(userName)) {
+            if (user.getAttributes().get("name").equals(userName)) {
                 try {
                     if (user.isOpen()) {
                         user.sendMessage(message);
