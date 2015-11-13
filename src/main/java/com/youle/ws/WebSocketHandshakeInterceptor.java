@@ -1,5 +1,6 @@
-package com.youle.chat;
+package com.youle.ws;
 
+import com.youle.utils.Constant;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -20,9 +21,8 @@ public class WebSocketHandshakeInterceptor implements HandshakeInterceptor {
             ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
             HttpSession session = servletRequest.getServletRequest().getSession(false);
             if (session != null) {
-                //使用userName区分WebSocketHandler，以便定向发送消息
-                //String userName = (String) session.getAttribute(Constants.SESSION_USERNAME);
-                //attributes.put(Constants.WEBSOCKET_USERNAME, userName);
+                String userName = (String) session.getAttribute(Constant.NICK_NAME_KEY);
+                attributes.put(Constant.NICK_NAME_KEY, userName);
             }
         }
         return true;
